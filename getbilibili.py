@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import xlwt
+import os
 
 book = xlwt.Workbook(encoding='utf-8', style_compression=0)
 sheet = book.add_sheet('text', cell_overwrite_ok=True)
@@ -88,7 +89,8 @@ def spiderBili(soup):
 
 if __name__ == '__main__':
     url = "https://www.bilibili.com/v/popular/rank/all"
-    response = requests.get(url)
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Safari/537.36'}
+    response = requests.get(url, headers = headers)
     if response.status_code==200:
         html = response.text
         soup = BeautifulSoup(html, "lxml")
@@ -97,6 +99,8 @@ if __name__ == '__main__':
 sheet.col(0).width = 1000
 sheet.col(1).width = 11000
 sheet.col(3).width = 5500
+if os.path.exists("./bilibilirank.xlsx"):
+  os.remove("./bilibilirank.xlsx")
 book.save('bilibilirank.xlsx')
 print("Excel has been created.\nPress Enter to Continue...")
 input()
